@@ -1,0 +1,372 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.header { padding: 1.5rem 0 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1.5rem; }
+.header h1 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 1.5rem; font-size: 12px; color: var(--color-text-secondary); }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.table-wrap { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 10px; text-align: left; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
+tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); transition: background 0.15s; cursor: pointer; }
+tbody tr:hover { background: var(--color-background-secondary); }
+tbody tr.descartado { opacity: 0.45; }
+td { padding: 10px 10px; vertical-align: middle; color: var(--color-text-primary); }
+td.setor { font-weight: 500; font-size: 13px; max-width: 180px; }
+td.setor small { display: block; font-weight: 400; font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+td.geo { font-size: 11px; color: var(--color-text-secondary); max-width: 130px; }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 100px; white-space: nowrap; }
+.badge.alta-fit { background: #EAF3DE; color: #27500A; }
+.badge.media-fit { background: #FAEEDA; color: #633806; }
+.badge.baixa-fit { background: #FCEBEB; color: #791F1F; }
+.badge.baixa-res { background: #EAF3DE; color: #27500A; }
+.badge.baixa-media-res { background: #E1F5EE; color: #085041; }
+.badge.media-res { background: #FAEEDA; color: #633806; }
+.badge.media-alta-res { background: #FAECE7; color: #712B13; }
+.badge.alta-res { background: #FCEBEB; color: #791F1F; }
+.badge.ok-vel { background: #EAF3DE; color: #27500A; }
+.badge.parcial-vel { background: #FAEEDA; color: #633806; }
+.badge.risco-vel { background: #FCEBEB; color: #791F1F; }
+.badge.descartado-vel { background: #F1EFE8; color: #5F5E5A; }
+
+.oport { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; }
+.oport .bar { height: 6px; border-radius: 3px; }
+.oport-alta { color: #27500A; }
+.oport-alta .bar { background: #639922; }
+.oport-media-alta { color: #085041; }
+.oport-media-alta .bar { background: #1D9E75; }
+.oport-media { color: #633806; }
+.oport-media .bar { background: #EF9F27; }
+.oport-media-baixa { color: #712B13; }
+.oport-media-baixa .bar { background: #D85A30; }
+.oport-baixa { color: #791F1F; }
+.oport-baixa .bar { background: #E24B4A; }
+.oport-descartado { color: #5F5E5A; }
+.oport-descartado .bar { background: #888780; }
+
+.rank-num { font-size: 15px; font-weight: 500; color: var(--color-text-secondary); width: 28px; text-align: center; }
+
+.detail-panel { display: none; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 0 0 0 28px; }
+.detail-panel.open { display: block; }
+.detail-panel p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+.detail-panel strong { color: var(--color-text-primary); font-weight: 500; }
+.detail-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.detail-chip { font-size: 11px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 4px 10px; color: var(--color-text-secondary); }
+
+@media (prefers-color-scheme: dark) {
+  .badge.alta-fit { background: #173404; color: #C0DD97; }
+  .badge.media-fit { background: #412402; color: #FAC775; }
+  .badge.baixa-fit { background: #501313; color: #F09595; }
+  .badge.baixa-res { background: #173404; color: #C0DD97; }
+  .badge.baixa-media-res { background: #04342C; color: #9FE1CB; }
+  .badge.media-res { background: #412402; color: #FAC775; }
+  .badge.media-alta-res { background: #4A1B0C; color: #F0997B; }
+  .badge.alta-res { background: #501313; color: #F09595; }
+  .badge.ok-vel { background: #173404; color: #C0DD97; }
+  .badge.parcial-vel { background: #412402; color: #FAC775; }
+  .badge.risco-vel { background: #501313; color: #F09595; }
+  .badge.descartado-vel { background: #2C2C2A; color: #B4B2A9; }
+}
+</style>
+
+<div class="header">
+  <h1>Novos mercados LATAM para o Leaf — análise setorial atualizada</h1>
+  <p>Critérios: fit técnico · resistência de entrada · compatibilidade com taxa de atualização ≥1s. Clique em um setor para detalhes.</p>
+</div>
+
+<div class="legend">
+  <span class="legend-item"><span class="dot" style="background:#639922"></span>Oportunidade alta</span>
+  <span class="legend-item"><span class="dot" style="background:#1D9E75"></span>Média-alta</span>
+  <span class="legend-item"><span class="dot" style="background:#EF9F27"></span>Média</span>
+  <span class="legend-item"><span class="dot" style="background:#D85A30"></span>Média-baixa</span>
+  <span class="legend-item"><span class="dot" style="background:#E24B4A"></span>Baixa</span>
+  <span class="legend-item"><span class="dot" style="background:#888780"></span>Descartado</span>
+  <span style="margin-left:8px; border-left: 0.5px solid var(--color-border-tertiary); padding-left:12px;">Velocidade de processo: <strong style="color:var(--color-text-primary)">✓ ok</strong> / <strong style="color:#BA7517">⚠ parcial</strong> / <strong style="color:#A32D2D">✗ risco</strong></span>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+  <th style="width:32px">#</th>
+  <th>Setor</th>
+  <th>Fit técnico</th>
+  <th>Resistência</th>
+  <th>Vel. processo</th>
+  <th>Oportunidade</th>
+  <th>Geografia</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+const sectors = [
+  {
+    rank: 1,
+    name: "Geração termelétrica a biomassa",
+    sub: "Caldeiras · cogeração industrial",
+    fit: "alta", fitLabel: "Alta",
+    res: "baixa", resLabel: "Baixa",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "alta", oportLabel: "Alta",
+    geo: "Brasil (SP, MS, GO), Argentina",
+    dor: "Variabilidade do combustível (umidade, granulometria, PCI variável de bagaço/cavaco/palha) gera oscilações de pressão de vapor e temperatura.",
+    usos: ["Controle de combustão em leito fluidizado", "Estabilização de pressão de vapor", "Otimização de excesso de O₂", "Controle de temperatura de superaquecimento"],
+    velNote: "Caldeiras têm constantes de tempo de minutos a dezenas de minutos. Taxa de 1s é mais que suficiente.",
+    competidores: "Baixíssima penetração de MPC em plantas <100 MW. Fornecedores globais focam em ciclos combinados a gás natural.",
+    descartado: false
+  },
+  {
+    rank: 2,
+    name: "Vidro (container e flat)",
+    sub: "Fornos de fusão · forehearth",
+    fit: "alta", fitLabel: "Alta",
+    res: "baixa-media", resLabel: "Baixa–Média",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "alta", oportLabel: "Alta",
+    geo: "México, Brasil, Colômbia",
+    dor: "Variabilidade de matéria-prima (cullet, areia, soda) e oscilações térmicas na abóbada geram defeitos e reduzem vida do refratário.",
+    usos: ["Controle de temperatura de abóbada e soleira", "Otimização de combustão por queimador", "Controle de forehearth", "Pressão diferencial entre regeneradores"],
+    velNote: "Fornos de vidro têm inercia térmica muito alta — constantes de tempo de horas. Compatível com 1s.",
+    competidores: "BDF, Horn, Stara Glass fornecem controle de combustão local, mas há pouca camada APC supervisória multivariável.",
+    descartado: false
+  },
+  {
+    rank: 3,
+    name: "Cerâmica industrial",
+    sub: "Revestimentos · sanitários",
+    fit: "alta", fitLabel: "Alta",
+    res: "baixa", resLabel: "Baixa",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "alta", oportLabel: "Alta",
+    geo: "Brasil (SP, SC), México, Colômbia",
+    dor: "Variabilidade térmica do forno a rolos gera defeitos de calibre e tonalidade; spray dryer com umidade variável impacta prensagem.",
+    usos: ["Controle de curva térmica do forno por zona", "Controle de umidade do spray dryer", "Otimização da relação ar/gás por zona", "Controle de pressão interna do forno"],
+    velNote: "Fornos a rolos operam com ciclos de 35–60 min por peça. Spray dryers são contínuos. Taxa de 1s plenamente adequada.",
+    competidores: "SACMI entrega controle OEM local. ABB e Siemens têm presença marginal. APC supervisório praticamente inexistente.",
+    descartado: false
+  },
+  {
+    rank: 4,
+    name: "Tratamento de água e efluentes",
+    sub: "ETEs industriais · grandes ETAs",
+    fit: "alta", fitLabel: "Alta",
+    res: "baixa-media", resLabel: "Baixa–Média",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "alta", oportLabel: "Alta",
+    geo: "Brasil, Chile, México",
+    dor: "Carga afluente varia em vazão e composição continuamente, dificultando dosagem ótima e cumprimento de limites de outorga.",
+    usos: ["Controle de OD em tanques de aeração", "Dosagem de coagulante em função de turbidez", "Controle de pH em neutralização", "Otimização de descarte de lodo"],
+    velNote: "Processos biológicos (lodos ativados, UASB) têm tempos de resposta de minutos a horas. Taxa de 1s compatível.",
+    competidores: "Veolia/SUEZ e Xylem focam em equipamentos. Camada APC é raramente ofertada por fornecedores globais nesse nicho.",
+    descartado: false
+  },
+  {
+    rank: 5,
+    name: "Biodiesel · etanol de milho · HVO",
+    sub: "Biocombustíveis avançados",
+    fit: "alta", fitLabel: "Alta",
+    res: "baixa-media", resLabel: "Baixa–Média",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "alta", oportLabel: "Alta",
+    geo: "Brasil, Argentina, Paraguai",
+    dor: "Variabilidade de matéria-prima (soja, sebo, palma) impacta conversão, qualidade do produto e consumo de metanol/catalisador.",
+    usos: ["Controle de razão metanol/óleo no reator", "Controle de coluna de destilação de metanol", "Controle do reator de hidrotratamento (HVO)", "Otimização de torre de destilação azeotrópica"],
+    velNote: "Reatores de transesterificação e colunas de destilação têm dinâmicas lentas (minutos). Plenamente compatível com 1s.",
+    competidores: "Próximo da sucroenergia — mesmas referências, mesmos integradores. MPC clássico raramente presente em biodiesel.",
+    descartado: false
+  },
+  {
+    rank: 6,
+    name: "Aquicultura — ração e processamento",
+    sub: "Fábricas de ração extrusada",
+    fit: "media", fitLabel: "Média",
+    res: "baixa", resLabel: "Baixa",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "media-alta", oportLabel: "Média-Alta",
+    geo: "Chile (salmão), Equador (camarão)",
+    dor: "Variabilidade de matérias-primas e instabilidade da extrusão afetam densidade, flutuabilidade e estabilidade na água do alimento.",
+    usos: ["Controle de temperatura por zona na extrusora", "Controle de secagem em fluidized bed dryer", "Controle de revestimento com óleo", "Controle de umidade de saída"],
+    velNote: "Extrusoras têm dinâmicas de temperatura e SME na ordem de dezenas de segundos a minutos. Taxa de 1s adequada para malhas supervisórias.",
+    competidores: "Bühler entrega controle OEM local. Quase nenhuma camada APC supervisória. Setor com cultura digital madura.",
+    descartado: false
+  },
+  {
+    rank: 7,
+    name: "Têxtil — acabamento contínuo",
+    sub: "Rame · mercerização · tinturaria",
+    fit: "media", fitLabel: "Média",
+    res: "baixa", resLabel: "Baixa",
+    vel: "parcial", velLabel: "⚠ Parcial",
+    oport: "media", oportLabel: "Média",
+    geo: "Brasil, Colômbia, Peru, México",
+    dor: "Reprodutibilidade de cor lote a lote e variabilidade térmica do rame geram altos custos de retrabalho.",
+    usos: ["Controle de zonas térmicas do rame", "Controle de temperatura em tinturaria de autoclave", "Controle de dosagem de corantes e auxiliares", "Controle de pH em alvejamento"],
+    velNote: "Linhas de rame contínuo são compatíveis com 1s. Tinturaria em jigger/jet tem bateladas de 4–12h — limítrofe ao mínimo de 5h e com algumas malhas mais rápidas. Avaliar planta a planta.",
+    competidores: "EAS Barcelona tem presença pontual. Mercado altamente fragmentado e sub-penetrado por APC.",
+    descartado: false
+  },
+  {
+    rank: 8,
+    name: "Polímeros 2ª geração e compounding",
+    sub: "Extrusoras · masterbatches · borracha",
+    fit: "alta", fitLabel: "Alta",
+    res: "media", resLabel: "Média",
+    vel: "parcial", velLabel: "⚠ Parcial",
+    oport: "media", oportLabel: "Média",
+    geo: "Brasil, México, Argentina",
+    dor: "Manter MFI/MI em janela estreita em transições de grade; controle térmico de extrusoras em compounding.",
+    usos: ["Controle de temperatura no reator de polimerização", "Controle de razão monômero/catalisador", "Controle de temperatura de extrusora", "Otimização de torres de despressurização"],
+    velNote: "Reatores de polimerização: OK. Extrusoras em compounding têm algumas malhas de torque e velocidade com dinâmica sub-segundo — requer avaliação das malhas específicas antes do projeto.",
+    competidores: "Grandes plantas (Braskem, Dow) já têm Honeywell Profit ou AspenTech DMC. Foco em transformadores e plantas de especialidades.",
+    descartado: false
+  },
+  {
+    rank: 9,
+    name: "O&G midstream — processamento de gás",
+    sub: "PGN · aminas · fracionamento",
+    fit: "alta", fitLabel: "Alta",
+    res: "media-alta", resLabel: "Média–Alta",
+    vel: "parcial", velLabel: "⚠ Parcial",
+    oport: "media", oportLabel: "Média",
+    geo: "Argentina (Vaca Muerta), Peru (Camisea), Brasil",
+    dor: "Especificação do gás vendável (TDP, poder calorífico), eficiência em compressão, otimização de torres de aminas.",
+    usos: ["Controle de torre de aminas (DEA/MDEA)", "Controle de desidratação a glicol", "Otimização de estações de compressão", "Controle de fracionadora de LGN"],
+    velNote: "Torres de absorção e desidratação são compatíveis. Malhas de pressão em compressores podem ter dinâmica sub-segundo — necessário mapear as malhas do escopo antes de propor.",
+    competidores: "Honeywell e Yokogawa fortes em ativos de Petrobras/Pemex. Operadoras independentes (Vaca Muerta, Camisea) são mais abertas.",
+    descartado: false
+  },
+  {
+    rank: 10,
+    name: "Papel e celulose",
+    sub: "Plantas de papel médio porte",
+    fit: "alta", fitLabel: "Alta",
+    res: "alta", resLabel: "Alta",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "media-baixa", oportLabel: "Média-Baixa",
+    geo: "Brasil, Chile, Uruguai (papel)",
+    dor: "Estabilidade do Kappa, uniformidade do branqueamento, eficiência energética da caldeira de recuperação.",
+    usos: ["Controle do número Kappa em digestor", "Controle de evaporadores de licor negro", "Controle de caldeira de recuperação", "Controle de retenção na máquina de papel"],
+    velNote: "Digestores e evaporadores têm constantes de tempo longas. Taxa de 1s compatível. Limitação é competitiva, não técnica.",
+    competidores: "Valmet IQ, ABB QCS e Honeywell Experion estão entrincheirados nas mega-mills. Foco em plantas de papel médio porte sem APC já instalado.",
+    descartado: false
+  },
+  {
+    rank: 11,
+    name: "Refino — unidades auxiliares",
+    sub: "Utilidades · ETE · fornos auxiliares",
+    fit: "alta", fitLabel: "Alta",
+    res: "alta", resLabel: "Alta",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "media-baixa", oportLabel: "Média-Baixa",
+    geo: "Brasil, México, Argentina, Chile",
+    dor: "Eficiência energética em utilidades e fornos auxiliares; cumprimento de limites em ETEs de refinaria.",
+    usos: ["Controle de fornos de processo auxiliares", "ETE de refinaria (mesma lógica do setor de efluentes)", "Controle de blending de produtos", "Controle de sistemas de vapor e água de resfriamento"],
+    velNote: "Fornos auxiliares e utilidades têm dinâmicas lentas. Taxa de 1s adequada para essas unidades específicas.",
+    competidores: "Honeywell/AspenTech dominam as unidades principais (CDU, FCC). Utilidades são frequentemente subatendidas — porta de entrada viável.",
+    descartado: false
+  },
+  {
+    rank: 12,
+    name: "Destilarias industriais",
+    sub: "Tequila · rum · cachaça industrial",
+    fit: "media", fitLabel: "Baixa–Média",
+    res: "baixa", resLabel: "Baixa",
+    vel: "ok", velLabel: "✓ OK",
+    oport: "media-baixa", oportLabel: "Média-Baixa",
+    geo: "México (tequila), Caribe, Brasil",
+    dor: "Estabilidade de colunas de destilação contínua e controle de fermentação fechada em grandes operações.",
+    usos: ["Controle de colunas de destilação contínua", "Controle de temperatura e densidade em fermentação fechada", "Controle de pH e nutrientes"],
+    velNote: "Destilação contínua e fermentação são processos lentos. Taxa de 1s compatível. Limitação aqui é o fit técnico (maioria do setor é artesanal/batelada curta).",
+    competidores: "Praticamente nenhum APC. Mas mercado endereçável é pequeno (apenas grandes destilarias industriais).",
+    descartado: false
+  },
+  {
+    rank: "—",
+    name: "Siderurgia",
+    sub: "Aciaria · laminação · FEA",
+    fit: "alta", fitLabel: "Alta",
+    res: "media", resLabel: "Média",
+    vel: "risco", velLabel: "✗ Descartado",
+    oport: "descartado", oportLabel: "Descartado",
+    geo: "Brasil, México, Argentina",
+    dor: "Muitas malhas críticas (controle de eletrodos em FEA, controle de laminação) operam abaixo de 1s.",
+    usos: [],
+    velNote: "Testado e descartado: a limitação de taxa de atualização mínima de 1s do Leaf é incompatível com as malhas de controle críticas da siderurgia, que exigem atuações em tempos menores que 1s.",
+    competidores: "Primetals, ABB e Tenova dominam controle de Nível 2 siderúrgico.",
+    descartado: true
+  },
+  {
+    rank: "—",
+    name: "Geração hidrelétrica",
+    sub: "",
+    fit: "baixa", fitLabel: "Baixa",
+    res: "alta", resLabel: "Alta",
+    vel: "risco", velLabel: "✗ Descartado",
+    oport: "descartado", oportLabel: "Descartado",
+    geo: "Brasil, Chile, Paraguai, Peru",
+    dor: "Controle eletromecânico — sem variáveis físico-químicas de processo onde fuzzy produza ganho relevante.",
+    usos: [],
+    velNote: "Descartado por fit técnico (controle regulatório eletromecânico, não processo químico/térmico) e por malhas de velocidade/frequência com dinâmica muito rápida.",
+    competidores: "ABB, GE, Siemens dominam reguladores de velocidade e sistemas de despacho.",
+    descartado: true
+  }
+];
+
+const fitClass = { alta: 'alta-fit', media: 'media-fit', baixa: 'baixa-fit' };
+const resClass = { baixa: 'baixa-res', 'baixa-media': 'baixa-media-res', media: 'media-res', 'media-alta': 'media-alta-res', alta: 'alta-res' };
+const velClass = { ok: 'ok-vel', parcial: 'parcial-vel', risco: 'risco-vel', descartado: 'descartado-vel' };
+const oClass = { alta: 'oport-alta', 'media-alta': 'oport-media-alta', media: 'oport-media', 'media-baixa': 'oport-media-baixa', baixa: 'oport-baixa', descartado: 'oport-descartado' };
+const oWidth = { alta: '88px', 'media-alta': '72px', media: '56px', 'media-baixa': '36px', baixa: '20px', descartado: '0px' };
+
+const tbody = document.getElementById('tbody');
+
+sectors.forEach((s, i) => {
+  const tr = document.createElement('tr');
+  if (s.descartado) tr.classList.add('descartado');
+
+  const chips = s.usos.map(u => `<span class="detail-chip">${u}</span>`).join('');
+
+  tr.innerHTML = `
+    <td><span class="rank-num">${s.rank}</span></td>
+    <td class="setor">${s.name}<small>${s.sub}</small></td>
+    <td><span class="badge ${fitClass[s.fit]}">${s.fitLabel}</span></td>
+    <td><span class="badge ${resClass[s.res]}">${s.resLabel}</span></td>
+    <td><span class="badge ${velClass[s.vel]}">${s.velLabel}</span></td>
+    <td>
+      <div class="oport ${oClass[s.oport]}">
+        <div class="bar" style="width:${oWidth[s.oport]}"></div>
+        <span>${s.oportLabel}</span>
+      </div>
+    </td>
+    <td class="geo">${s.geo}</td>
+  `;
+
+  const detailTr = document.createElement('tr');
+  detailTr.innerHTML = `<td colspan="7" style="padding:0 0 6px;">
+    <div class="detail-panel" id="detail-${i}">
+      <p><strong>Dor principal:</strong> ${s.dor}</p>
+      <p style="margin-top:8px"><strong>Velocidade de processo:</strong> ${s.velNote}</p>
+      <p style="margin-top:8px"><strong>Concorrência APC:</strong> ${s.competidores}</p>
+      ${chips ? `<div class="detail-row">${chips}</div>` : ''}
+    </div>
+  </td>`;
+
+  tr.addEventListener('click', () => {
+    const panel = document.getElementById('detail-' + i);
+    panel.classList.toggle('open');
+  });
+
+  tbody.appendChild(tr);
+  tbody.appendChild(detailTr);
+});
+</script>

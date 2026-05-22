@@ -1,0 +1,299 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.page-title{font-size:16px;font-weight:500;padding:1.5rem 0 .25rem}
+.page-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.5rem}
+
+.tabs{display:flex;gap:6px;margin-bottom:1.5rem;border-bottom:.5px solid var(--color-border-tertiary);padding-bottom:0}
+.tab{font-size:12px;font-weight:500;padding:7px 14px;border-radius:6px 6px 0 0;cursor:pointer;color:var(--color-text-secondary);border:.5px solid transparent;border-bottom:none;margin-bottom:-1px;transition:all .15s}
+.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-tertiary);border-bottom-color:var(--color-background-primary)}
+.tab:not(.active):hover{background:var(--color-background-secondary)}
+.panel{display:none}.panel.active{display:block}
+
+/* METRICS ROW */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem 1rem}
+.metric-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.metric-value{font-size:20px;font-weight:500}
+.metric-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+
+/* SECTION */
+.section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-secondary);margin-bottom:.75rem;margin-top:1.25rem;padding-top:1.25rem;border-top:.5px solid var(--color-border-tertiary)}
+.section-label:first-of-type{margin-top:0;padding-top:0;border-top:none}
+
+/* COMPANY CARDS */
+.company-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.company-card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.125rem;cursor:pointer;transition:border-color .15s}
+.company-card:hover{border-color:var(--color-border-secondary)}
+.company-card.open{border-color:var(--color-border-primary)}
+.company-header{display:flex;align-items:flex-start;gap:10px}
+.company-icon{width:36px;height:36px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.company-name{font-size:13px;font-weight:500;line-height:1.3}
+.company-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;line-height:1.4}
+.company-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag{font-size:10px;padding:2px 7px;border-radius:100px;border:.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.company-detail{margin-top:10px;padding-top:10px;border-top:.5px solid var(--color-border-tertiary);display:none;font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.company-detail.open{display:block}
+.detail-row{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.detail-item{display:flex;gap:6px}
+.detail-key{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-secondary);min-width:80px;margin-top:1px;flex-shrink:0}
+.detail-val{font-size:11px;color:var(--color-text-primary)}
+.leaf-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;margin-top:6px;background:#E1F5EE;color:#085041}
+
+/* PIPELINE */
+.pipeline-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:.5rem}
+.pipeline-table th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);font-weight:500;padding:5px 8px;text-align:left;border-bottom:.5px solid var(--color-border-tertiary)}
+.pipeline-table td{padding:8px 8px;border-bottom:.5px solid var(--color-border-tertiary);vertical-align:middle}
+.pipeline-table tr:last-child td{border-bottom:none}
+.status-badge{font-size:10px;padding:2px 7px;border-radius:100px;font-weight:500;white-space:nowrap}
+.s-op{background:#EAF3DE;color:#27500A}
+.s-build{background:#FAEEDA;color:#633806}
+.s-outorga{background:#E6F1FB;color:#185FA5}
+.priority{font-size:10px;padding:2px 7px;border-radius:100px;font-weight:500}
+.p1{background:#E1F5EE;color:#085041}
+.p2{background:#FAEEDA;color:#633806}
+.p3{background:#F1EFE8;color:#5F5E5A}
+
+/* GTM */
+.gtm-list{display:flex;flex-direction:column;gap:8px;margin-top:.5rem}
+.gtm-item{display:flex;gap:10px;align-items:flex-start;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem 1rem}
+.gtm-num{font-size:13px;font-weight:500;color:var(--color-text-secondary);min-width:22px;margin-top:1px}
+.gtm-body{font-size:12px;line-height:1.6;color:var(--color-text-secondary)}
+.gtm-body strong{color:var(--color-text-primary);font-weight:500}
+
+@media(prefers-color-scheme:dark){
+  .leaf-tag{background:#04342C;color:#9FE1CB}
+  .s-op{background:#173404;color:#C0DD97}
+  .s-build{background:#412402;color:#FAC775}
+  .s-outorga{background:#042C53;color:#85B7EB}
+  .p1{background:#04342C;color:#9FE1CB}
+  .p2{background:#412402;color:#FAC775}
+  .p3{background:#2C2C2A;color:#B4B2A9}
+}
+</style>
+
+<div class="page-title">Termelétricas a biomassa — excluindo sucroenergia</div>
+<div class="page-sub">Dois segmentos novos para a iSystems: licor negro (celulose) e resíduos florestais/agroindustriais independentes. Clique em cada empresa para detalhes.</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('licor')">🌲 Licor negro — celulose</div>
+  <div class="tab" onclick="showTab('florestal')">🪵 Resíduos florestais e outros</div>
+  <div class="tab" onclick="showTab('pipeline')">🔭 Pipeline de novos projetos</div>
+  <div class="tab" onclick="showTab('gtm')">🎯 Go-to-market</div>
+</div>
+
+<!-- TAB 1: LICOR NEGRO -->
+<div class="panel active" id="panel-licor">
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Usinas operando</div><div class="metric-value">23</div><div class="metric-sub">todas integradas a fábricas de celulose</div></div>
+    <div class="metric"><div class="metric-label">Capacidade total</div><div class="metric-value">3,7 GW</div><div class="metric-sub">20,5% de toda biomassa BR</div></div>
+    <div class="metric"><div class="metric-label">Maior unidade</div><div class="metric-value">384 MW</div><div class="metric-sub">Suzano — Ribas do Rio Pardo (MS)</div></div>
+    <div class="metric"><div class="metric-label">Disponibilidade</div><div class="metric-value">~355 dias/ano</div><div class="metric-sub">parada anual de apenas ~10 dias</div></div>
+  </div>
+
+  <div class="section-label">Principais empresas operadoras</div>
+  <div class="company-grid" id="licor-cards"></div>
+</div>
+
+<!-- TAB 2: RESÍDUOS FLORESTAIS -->
+<div class="panel" id="panel-florestal">
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Usinas operando</div><div class="metric-value">~99</div><div class="metric-sub">resíduos florestais + lenha + outros</div></div>
+    <div class="metric"><div class="metric-label">Capacidade total</div><div class="metric-value">~1,2 GW</div><div class="metric-sub">resíduos florestais + lenha + biogás</div></div>
+    <div class="metric"><div class="metric-label">Perfil</div><div class="metric-value">10–80 MW</div><div class="metric-sub">faixa mais comum por usina</div></div>
+    <div class="metric"><div class="metric-label">Concentração</div><div class="metric-value">MS, MG, PR, RS</div><div class="metric-sub">polos florestais e frigoríficos</div></div>
+  </div>
+
+  <div class="section-label">Perfis de empresas-alvo</div>
+  <div class="company-grid" id="florestal-cards"></div>
+</div>
+
+<!-- TAB 3: PIPELINE -->
+<div class="panel" id="panel-pipeline">
+  <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:.75rem">Projetos sem vínculo com sucroenergia em construção ou com outorga aprovada — oportunidade de entrar na fase de comissionamento.</p>
+  <table class="pipeline-table">
+    <thead><tr>
+      <th>Empresa / Projeto</th><th>Combustível</th><th>MW</th><th>Estado</th><th>Status</th><th>Prioridade Leaf</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><strong>Suzano</strong> — UTE Ribas do Rio Pardo</td><td>Licor negro</td><td>384</td><td>MS</td><td><span class="status-badge s-op">Em operação</span></td><td><span class="priority p1">Alta</span></td></tr>
+      <tr><td><strong>Bracell</strong> — Lençóis Paulista</td><td>Licor negro</td><td>409</td><td>SP</td><td><span class="status-badge s-op">Em operação</span></td><td><span class="priority p1">Alta</span></td></tr>
+      <tr><td><strong>Klabin</strong> — Puma II (Ortigueira)</td><td>Licor negro</td><td>330</td><td>PR</td><td><span class="status-badge s-op">Em operação</span></td><td><span class="priority p1">Alta</span></td></tr>
+      <tr><td><strong>Arauco</strong> — UTE Sucuriú</td><td>Licor negro</td><td>432</td><td>MS</td><td><span class="status-badge s-outorga">Outorgada (2029)</span></td><td><span class="priority p1">Alta</span></td></tr>
+      <tr><td><strong>CMPC</strong> — Nova planta RS</td><td>Licor negro</td><td>~200 est.</td><td>RS</td><td><span class="status-badge s-outorga">Planejamento</span></td><td><span class="priority p2">Média</span></td></tr>
+      <tr><td><strong>Inpasa</strong> — Sidrolândia</td><td>Resíduos florestais</td><td>53</td><td>MS</td><td><span class="status-badge s-op">Em operação</span></td><td><span class="priority p1">Alta</span></td></tr>
+      <tr><td><strong>IBS Energy</strong> — Cidade do Livro</td><td>Resíduos florestais / multi</td><td>80</td><td>SP</td><td><span class="status-badge s-build">Em construção</span></td><td><span class="priority p1">Alta</span></td></tr>
+      <tr><td><strong>Inpasa</strong> — UTE LEM</td><td>Lenha / resíduos</td><td>52</td><td>BA</td><td><span class="status-badge s-build">Em construção</span></td><td><span class="priority p1">Alta</span></td></tr>
+      <tr><td><strong>Eber Bioenergia</strong> — Rio Claro GO</td><td>Resíduos florestais</td><td>38</td><td>GO</td><td><span class="status-badge s-build">Em construção</span></td><td><span class="priority p2">Média</span></td></tr>
+      <tr><td><strong>Maringá Energia</strong> — Jacarezinho 2</td><td>Resíduos florestais</td><td>25</td><td>PR</td><td><span class="status-badge s-build">Em construção</span></td><td><span class="priority p2">Média</span></td></tr>
+      <tr><td><strong>Infravix</strong> — UTE Uruguaiana</td><td>Casca de arroz</td><td>5</td><td>RS</td><td><span class="status-badge s-build">Em construção</span></td><td><span class="priority p3">Baixa (pequena)</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TAB 4: GTM -->
+<div class="panel" id="panel-gtm">
+  <div class="gtm-list">
+    <div class="gtm-item"><div class="gtm-num">1</div><div class="gtm-body"><strong>Priorizar licor negro de médio porte (Inpasa, Eber, Maringá Energia, IBS Energy).</strong> As grandes de celulose (Suzano, Klabin, Bracell) têm times de automação robustos e ciclos de decisão longos. Começar pelas independentes de 25–80 MW, onde o tomador de decisão é mais acessível e o APC é raridade.</div></div>
+    <div class="gtm-item"><div class="gtm-num">2</div><div class="gtm-body"><strong>Abordagem por comissionamento nas obras em andamento.</strong> IBS Energy (Cidade do Livro, SP) e Inpasa LEM (BA) estão em fase de construção — ideal para entrar como parceiro de otimização desde o início, antes de qualquer concorrente se instalar.</div></div>
+    <div class="gtm-item"><div class="gtm-num">3</div><div class="gtm-body"><strong>Arauco Sucuriú (432 MW, MS, prazo 2029) é o maior pipeline.</strong> Outorga já aprovada, projeto de R$ 25 bi em andamento. A janela de decisão para APC começa a se abrir em 2026–2027 durante o comissionamento. Vale prospectar agora para estar na frente.</div></div>
+    <div class="gtm-item"><div class="gtm-num">4</div><div class="gtm-body"><strong>Argumento comercial central para licor negro: variabilidade de composição do licor</strong> (sólidos totais, razão Na/S, poder calorífico variável entre 12–14 GJ/t) desestabiliza a caldeira de recuperação — dor técnica direta que o Leaf resolve, com ROI mensurável em eficiência energética e redução de paradas.</div></div>
+    <div class="gtm-item"><div class="gtm-num">5</div><div class="gtm-body"><strong>Argumento comercial para resíduos florestais independentes: PPA e penalidade por desvio.</strong> Usinas como a da Inpasa têm contrato de entrega de energia firme. Qualquer instabilidade da caldeira por variação de umidade/granulometria do cavaco gera penalidade. ROI do Leaf é direto e calculável.</div></div>
+    <div class="gtm-item"><div class="gtm-num">6</div><div class="gtm-body"><strong>DCS comum: ABB, Siemens, Valmet e WEG</strong> — os mesmos fornecedores de automação do segmento sucroenergético. A iSystems já tem experiência de integração OPC com esses sistemas, o que reduz o risco técnico percebido pelo cliente e acelera a proposta.</div></div>
+    <div class="gtm-item"><div class="gtm-num">7</div><div class="gtm-body"><strong>Casca de arroz (RS/SC/RS) e biogás são oportunidades menores mas com baixíssima competição.</strong> Usinas de 3–10 MW em polo arrozeiro do Sul — tomador de decisão local, sem APC, processo contínuo. Bom para um piloto de case study com pouco risco comercial.</div></div>
+  </div>
+</div>
+
+<script>
+const licorEmpresas = [
+  {
+    icon:'🌲', bg:'#EAF3DE',
+    name:'Suzano',
+    sub:'Maior produtora mundial de celulose de eucalipto',
+    tags:['Ribas do Rio Pardo MS','384 MW','Licor negro','Valmet DCS'],
+    mw:'384 MW (Ribas do Rio Pardo) + múltiplas unidades menores',
+    dcs:'Valmet DNA / ABB',
+    dor:'Variabilidade de composição do licor negro (sólidos totais, razão Na/S) impacta combustão da caldeira de recuperação',
+    leaf:'Controle supervisório da caldeira de recuperação: estabilização de pressão de vapor, otimização de injeção de ar primário/secundário e controle de temperatura dos gases'
+  },
+  {
+    icon:'🌲', bg:'#EAF3DE',
+    name:'Klabin',
+    sub:'Maior produtora de embalagens e papéis do Brasil — Puma II (PR)',
+    tags:['Ortigueira PR','330 MW','Licor negro','ABB 800xA'],
+    mw:'330 MW — Projeto Puma II, Ortigueira PR',
+    dcs:'ABB 800xA (parceria estratégica ABB-Klabin)',
+    dor:'Estabilidade da geração de vapor para autoconsumo da fábrica e exportação ao SIN',
+    leaf:'Oportunidade de entrada via utilidades da fábrica (ETE, caldeiras de força auxiliares) como piloto antes de abordar a caldeira de recuperação principal'
+  },
+  {
+    icon:'🌲', bg:'#EAF3DE',
+    name:'Bracell',
+    sub:'Fábrica de Lençóis Paulista — maior caldeira de recuperação limpa do mundo',
+    tags:['Lençóis Paulista SP','409 MW','Licor negro','Gaseificador'],
+    mw:'409 MW — inclui dois gaseificadores de 87 MW cada (Bracell)',
+    dcs:'Fornecedores OEM de celulose (Andritz, Valmet)',
+    dor:'Operação de múltiplas fontes de energia (caldeira de recuperação + gaseificadores) com gestão de balanço energético complexo',
+    leaf:'Interesse secundário — grande porte com automação robusta. Abordar como parceria via integrador local ou consultor de processo'
+  },
+  {
+    icon:'🌲', bg:'#EAF3DE',
+    name:'Arauco (Sucuriú)',
+    sub:'Projeto em construção — Inocência MS — maior usina de licor negro em desenvolvimento',
+    tags:['Inocência MS','432 MW','Outorga 2029','Pipeline'],
+    mw:'432 MW previstos — outorga ANEEL homologada',
+    dcs:'A definir (projeto em fase de engenharia)',
+    dor:'Usina greenfield — janela de APC desde o comissionamento',
+    leaf:'Melhor oportunidade de pipeline: entrar na fase de engenharia de automação (2026–2027), antes que DCS e APC sejam definidos pelo OEM'
+  },
+  {
+    icon:'🌲', bg:'#EAF3DE',
+    name:'Eldorado Brasil / CMPC',
+    sub:'Três Lagoas MS (Eldorado) e nova planta RS (CMPC)',
+    tags:['Três Lagoas MS','CMPC RS em planejamento','Licor negro'],
+    mw:'Eldorado: ~300 MW estimado. CMPC nova planta RS: ~200 MW estimado',
+    dcs:'Honeywell Experion (Eldorado) / a definir (CMPC)',
+    dor:'Eficiência energética e redução de variabilidade na geração de vapor para o processo',
+    leaf:'Eldorado usa Honeywell — avaliar fit de integração OPC. CMPC nova planta: oportunidade de entrada similar à Arauco Sucuriú'
+  }
+];
+
+const florestalEmpresas = [
+  {
+    icon:'🪵', bg:'#FAEEDA',
+    name:'Inpasa Agroindustrial',
+    sub:'Etanol de milho — cogeração a resíduos florestais. MS e BA',
+    tags:['Sidrolândia MS 53 MW','LEM BA 52 MW','Resíduos florestais','Em operação / construção'],
+    mw:'53 MW (Sidrolândia MS, operando) + 52 MW (Luiz Eduardo Magalhães BA, em construção)',
+    dcs:'A confirmar — plantas novas provável ABB ou Siemens',
+    dor:'Variabilidade de umidade do cavaco de madeira desestabiliza pressão de vapor. PPA firmado — penalidade por desvio de geração',
+    leaf:'Perfil ideal: plantas novas, porte médio (50 MW), sem APC instalado, operador com foco em eficiência. Abordagem proativa no comissionamento da unidade BA'
+  },
+  {
+    icon:'🪵', bg:'#FAEEDA',
+    name:'IBS Energy — UTE Cidade do Livro',
+    sub:'Maior termelétrica multi-biomassa independente do Brasil — Lençóis Paulista SP',
+    tags:['Lençóis Paulista SP','80 MW','Cavaco + palha + multi','Em construção'],
+    mw:'80 MW — dois geradores de 40 MW. Caldeira 250 t/h de vapor',
+    dcs:'A definir — contrato de 15 anos com ANEEL (LRCap 2021)',
+    dor:'Combustível multi-fonte (cavaco, palha, resíduos florestais, palha de milho) gera variabilidade extrema de PCI e umidade — exatamente a dor que o Leaf resolve',
+    leaf:'Oportunidade de destaque: multi-biomassa é o cenário de maior variabilidade de combustível. Leaf pode ser posicionado como solução desde o start-up'
+  },
+  {
+    icon:'🪵', bg:'#FAEEDA',
+    name:'Eber Bioenergia',
+    sub:'UTE Rio Claro de Goiás — resíduos florestais. GO',
+    tags:['Montes Claros de Goiás GO','38 MW','Resíduos florestais','Em construção'],
+    mw:'38 MW — empresa independente, sem portfólio diversificado',
+    dcs:'A definir',
+    dor:'Operador independente sem estrutura própria de automação avançada — alta abertura para soluções SaaS',
+    leaf:'Empresa independente = menor complexidade de venda. Ideal como case study de ROI para o segmento'
+  },
+  {
+    icon:'🪵', bg:'#FAEEDA',
+    name:'Usinas de casca de arroz (RS/SC)',
+    sub:'Polo arrozeiro do Sul — Infravix (Uruguaiana) e outros projetos emergentes',
+    tags:['Rio Grande do Sul','5–15 MW','Casca de arroz','Múltiplos operadores'],
+    mw:'Usinas de 5–15 MW típicas. Infravix: 5 MW em Uruguaiana RS',
+    dcs:'PLC Siemens ou Allen-Bradley em plantas menores',
+    dor:'Casca de arroz tem PCI e umidade variáveis por safra. Usinas pequenas operam com controle manual — variabilidade não resolvida',
+    leaf:'Menor ROI por planta (tamanho pequeno), mas custo de venda baixo e sem concorrência. Bom para piloto de case study com baixo risco'
+  },
+  {
+    icon:'🪵', bg:'#FAEEDA',
+    name:'Usinas integradas a frigoríficos e papel',
+    sub:'Cogeração em plantas não-sucroenergéticas — MS, MG, PR, SC',
+    tags:['Mato Grosso do Sul','Minas Gerais','Resíduos florestais','Cogeração'],
+    mw:'10–60 MW típicos. Três grandes em MS (Ribas do Rio Pardo e Três Lagoas) à resíduos florestais',
+    dcs:'ABB, Siemens, WEG — DCS com OPC nativo',
+    dor:'Variabilidade do resíduo (mistura de serragem, cavaco, cascas) e pressão de vapor instável afetam o processo industrial integrado',
+    leaf:'Tomador de decisão é o gerente industrial da planta principal (fábrica de papel, frigorífico, celuloseira menor) — venda pela eficiência do processo principal, não só pela geração de energia'
+  }
+];
+
+function buildCards(data, containerId) {
+  const container = document.getElementById(containerId);
+  data.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'company-card';
+    div.innerHTML = `
+      <div class="company-header">
+        <div class="company-icon" style="background:${c.bg}">${c.icon}</div>
+        <div>
+          <div class="company-name">${c.name}</div>
+          <div class="company-sub">${c.sub}</div>
+        </div>
+      </div>
+      <div class="company-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="company-detail" id="${containerId}-detail-${i}">
+        <div class="detail-row">
+          <div class="detail-item"><span class="detail-key">Capacidade</span><span class="detail-val">${c.mw}</span></div>
+          <div class="detail-item"><span class="detail-key">DCS típico</span><span class="detail-val">${c.dcs}</span></div>
+          <div class="detail-item"><span class="detail-key">Dor principal</span><span class="detail-val">${c.dor}</span></div>
+        </div>
+        <span class="leaf-tag">Leaf: ${c.leaf}</span>
+      </div>
+    `;
+    div.addEventListener('click', () => {
+      const detail = document.getElementById(`${containerId}-detail-${i}`);
+      const isOpen = detail.classList.contains('open');
+      document.querySelectorAll(`#${containerId} .company-detail`).forEach(d => d.classList.remove('open'));
+      document.querySelectorAll(`#${containerId} .company-card`).forEach(d => d.classList.remove('open'));
+      if (!isOpen) { detail.classList.add('open'); div.classList.add('open'); }
+    });
+    container.appendChild(div);
+  });
+}
+
+buildCards(licorEmpresas, 'licor-cards');
+buildCards(florestalEmpresas, 'florestal-cards');
+
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const tabs = ['licor','florestal','pipeline','gtm'];
+  document.querySelectorAll('.tab')[tabs.indexOf(id)].classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+</script>

@@ -1,0 +1,304 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.section{margin-bottom:2rem}
+.section-title{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:.5px solid var(--color-border-tertiary)}
+
+/* METRIC CARDS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem 1rem}
+.metric-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric-value{font-size:22px;font-weight:500;line-height:1.1}
+.metric-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+
+/* BIOMASS MIX BAR */
+.mix-bar{width:100%;height:28px;border-radius:6px;overflow:hidden;display:flex;margin:10px 0 6px}
+.mix-legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--color-text-secondary)}
+.mix-legend span{display:flex;align-items:center;gap:5px}
+.dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+/* LATAM TABLE */
+.latam-table{width:100%;border-collapse:collapse;font-size:12px}
+.latam-table th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);font-weight:500;padding:5px 8px;text-align:left;border-bottom:.5px solid var(--color-border-tertiary)}
+.latam-table td{padding:7px 8px;border-bottom:.5px solid var(--color-border-tertiary);vertical-align:middle}
+.latam-table tr:last-child td{border-bottom:none}
+.bar-cell{width:120px}
+.bar-bg{background:var(--color-background-secondary);border-radius:3px;height:6px;overflow:hidden}
+.bar-fill{height:6px;border-radius:3px}
+.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:100px;font-weight:500}
+.pill-alto{background:#EAF3DE;color:#27500A}
+.pill-medio{background:#FAEEDA;color:#633806}
+.pill-baixo{background:#FAECE7;color:#712B13}
+
+/* PROCESS DIAGRAM */
+.process-wrap{overflow-x:auto}
+.process-flow{display:flex;align-items:flex-start;gap:0;min-width:680px;padding:1rem 0}
+.step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;cursor:pointer}
+.step:not(:last-child)::after{content:'';position:absolute;top:28px;right:-1px;width:2px;height:2px;z-index:1}
+.arrow{display:flex;align-items:center;padding-top:22px;flex-shrink:0}
+.arrow svg{width:20px;height:20px;flex-shrink:0}
+.step-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;border:2px solid transparent;transition:transform .15s,box-shadow .15s}
+.step:hover .step-icon{transform:scale(1.08)}
+.step-num{font-size:9px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:2px}
+.step-name{font-size:11px;font-weight:500;text-align:center;max-width:72px;line-height:1.3}
+.step-tag{font-size:9px;color:var(--color-text-secondary);text-align:center;margin-top:2px;max-width:72px;line-height:1.3}
+
+/* DETAIL PANEL */
+.detail{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;margin-top:1rem;font-size:12px;line-height:1.7;display:none}
+.detail.open{display:block}
+.detail h4{font-size:13px;font-weight:500;margin-bottom:.5rem}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.75rem}
+.detail-item{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.6rem .8rem}
+.detail-item-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);margin-bottom:2px}
+.detail-item-value{font-size:12px;font-weight:500}
+.tag-apc{display:inline-block;font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;margin-top:.5rem;background:#E1F5EE;color:#085041}
+
+@media(prefers-color-scheme:dark){
+  .pill-alto{background:#173404;color:#C0DD97}
+  .pill-medio{background:#412402;color:#FAC775}
+  .pill-baixo{background:#4A1B0C;color:#F0997B}
+  .tag-apc{background:#04342C;color:#9FE1CB}
+}
+</style>
+
+<div class="section">
+  <div class="section-title">Tamanho de mercado — Brasil (maior mercado LATAM)</div>
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Capacidade instalada (2025)</div>
+      <div class="metric-value">18,3 GW</div>
+      <div class="metric-sub">4ª fonte da matriz elétrica br.</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Usinas em operação</div>
+      <div class="metric-value">653</div>
+      <div class="metric-sub">Fonte ANEEL, jan. 2025</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Expansão prevista 2025</div>
+      <div class="metric-value">+793 MW</div>
+      <div class="metric-sub">Acima da média histórica</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Potencial até 2050 (EPE)</div>
+      <div class="metric-value">60 GW</div>
+      <div class="metric-sub">3× o parque atual</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Geração em 2024</div>
+      <div class="metric-value">40,6%</div>
+      <div class="metric-sub">da geração termelétrica total</div>
+    </div>
+  </div>
+
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">Mix por tipo de biomassa (capacidade instalada)</div>
+  <div class="mix-bar">
+    <div style="width:71.9%;background:#3B6D11;height:100%"></div>
+    <div style="width:18.9%;background:#1D9E75;height:100%"></div>
+    <div style="width:4.7%;background:#9FE1CB;height:100%"></div>
+    <div style="width:4.5%;background:#D3D1C7;height:100%"></div>
+  </div>
+  <div class="mix-legend">
+    <span><span class="dot" style="background:#3B6D11"></span>Bagaço/palha de cana — 12,7 GW (71,9%)</span>
+    <span><span class="dot" style="background:#1D9E75"></span>Licor negro — 3,3 GW (18,9%)</span>
+    <span><span class="dot" style="background:#9FE1CB"></span>Resíduos florestais — 837 MW (4,7%)</span>
+    <span><span class="dot" style="background:#D3D1C7"></span>Outros — ~800 MW (4,5%)</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Panorama LATAM — outros países</div>
+  <table class="latam-table">
+    <thead><tr>
+      <th>País</th><th>Situação</th><th>Tamanho estimado</th><th class="bar-cell">Potencial relativo</th><th>Maturidade APC</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Brasil</strong></td>
+        <td>Mercado maduro em expansão</td>
+        <td>18,3 GW · 653 usinas</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:100%;background:#3B6D11"></div></div></td>
+        <td><span class="pill pill-baixo">Baixa em APC</span></td>
+      </tr>
+      <tr>
+        <td><strong>Argentina</strong></td>
+        <td>Crescente; biomassa de soja/cana e resíduos florestais; leilões RenovAr</td>
+        <td>~600–900 MW estimado</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:22%;background:#1D9E75"></div></div></td>
+        <td><span class="pill pill-baixo">Baixa em APC</span></td>
+      </tr>
+      <tr>
+        <td><strong>Colômbia</strong></td>
+        <td>Bagaço de cana (Vale do Cauca); leilões de renováveis em andamento</td>
+        <td>~300–500 MW estimado</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:14%;background:#1D9E75"></div></div></td>
+        <td><span class="pill pill-baixo">Baixa em APC</span></td>
+      </tr>
+      <tr>
+        <td><strong>Paraguai</strong></td>
+        <td>Cogeração em usinas de açúcar e celulose; Omega Green (HVO/biomassa)</td>
+        <td>~150–250 MW estimado</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:8%;background:#9FE1CB"></div></div></td>
+        <td><span class="pill pill-baixo">Incipiente</span></td>
+      </tr>
+      <tr>
+        <td><strong>Chile</strong></td>
+        <td>Biomassa florestal (CMPC, Arauco); metas de descarbonização aceleradas</td>
+        <td>~400–600 MW estimado</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:16%;background:#9FE1CB"></div></div></td>
+        <td><span class="pill pill-medio">Média</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">Processo de geração — clique em cada etapa para detalhes e oportunidades do Leaf</div>
+  <div class="process-wrap">
+    <div class="process-flow" id="flow"></div>
+  </div>
+  <div class="detail" id="detail-panel">
+    <h4 id="detail-title"></h4>
+    <p id="detail-desc"></p>
+    <div class="detail-grid" id="detail-grid"></div>
+    <div id="detail-apc"></div>
+  </div>
+</div>
+
+<script>
+const steps = [
+  {
+    icon: '🌿',
+    bg: '#EAF3DE', border: '#639922',
+    num: '01', name: 'Recepção e preparo', tag: 'Combustível',
+    title: 'Recepção, armazenagem e preparo do combustível',
+    desc: 'A biomassa (bagaço de cana, cavaco de eucalipto, palha, casca de arroz, resíduos florestais) chega por esteiras ou caminhões. É pesada, analisada (umidade, granulometria, PCI) e armazenada em pátios. Em usinas sucroenergéticas, o bagaço vem direto da moenda. A heterogeneidade da biomassa — umidade variando de 20% a 55%, PCI de 1.800 a 3.200 kcal/kg — é a raiz da variabilidade de todo o processo downstream.',
+    items: [
+      {label: 'Variáveis-chave', value: 'Umidade, granulometria, PCI, nível de silo/pátio'},
+      {label: 'Equipamentos', value: 'Picadores, peneiras, secadores de esteira, silos'},
+      {label: 'Problema típico', value: 'PCI variável desestabiliza combustão e pressão de vapor'},
+      {label: 'Instrumentação', value: 'Balança, analisador NIR de umidade, sensores de nível'},
+    ],
+    apc: 'Oportunidade Leaf: compensação feedforward de umidade/PCI para pré-ajustar a curva ar/combustível antes da perturbação chegar ao forno.'
+  },
+  {
+    icon: '🔥',
+    bg: '#FAECE7', border: '#D85A30',
+    num: '02', name: 'Caldeira', tag: 'Etapa crítica',
+    title: 'Caldeira de biomassa — combustão e geração de vapor',
+    desc: 'O coração do processo. A biomassa é queimada em grelha móvel, leito fixo ou leito fluidizado (BFB/CFB). O calor gerado aquece a água nos tubos da caldeira, gerando vapor saturado (tipicamente 60–100 bar) que é superaquecido até 400–540°C. É aqui que se concentra a maior variabilidade: a combustão com biomassa heterogênea gera oscilações de temperatura na câmara, excesso de O₂ variável, formação de escórias e flutuações de pressão de vapor — o principal desafio operacional do setor.',
+    items: [
+      {label: 'Variáveis controladas', value: 'Pressão de vapor, temp. câmara, O₂ nos gases, temp. superaquecimento, nível do tambor'},
+      {label: 'Perturbações', value: 'Variação de umidade/PCI do combustível, troca de lote de biomassa'},
+      {label: 'Tipos de leito', value: 'Grelha móvel, BFB (leito fluidizado borbulhante), CFB (circulante)'},
+      {label: 'DCS típico', value: 'ABB 800xA, Siemens PCS 7, Emerson DeltaV, WEG'},
+    ],
+    apc: 'Principal oportunidade Leaf: controle multivariável de combustão (razão ar/combustível, distribuição de ar primário/secundário, temperatura de câmara, pressão de vapor, nível do tambor). Aqui está 80% do valor do APC nesse setor.'
+  },
+  {
+    icon: '⚙️',
+    bg: '#E6F1FB', border: '#185FA5',
+    num: '03', name: 'Turbina a vapor', tag: 'Geração',
+    title: 'Turbina a vapor e gerador',
+    desc: 'O vapor superaquecido expande pela turbina (contrapressão ou condensação), convertendo energia térmica em energia mecânica que aciona o gerador elétrico. Em usinas de cogeração, parte do vapor de extração (menor pressão, ~3–5 bar) vai para processos industriais (destilação de álcool, aquecimento de mel, etc.). O controle de velocidade e carga da turbina é feito pelo regulador próprio (governor) — não é escopo do Leaf por ser dinâmica sub-segundo.',
+    items: [
+      {label: 'Variáveis-chave', value: 'Pressão de admissão, temp. admissão, carga gerada, extração de vapor'},
+      {label: 'Tipos', value: 'Contrapressão (cogeração) ou condensação (geração pura)'},
+      {label: 'Potência típica', value: '10–384 MW por unidade'},
+      {label: 'Nota Leaf', value: 'Controle da turbina em si (governor) é sub-segundo — fora do escopo'},
+    ],
+    apc: 'Oportunidade Leaf (indireta): estabilizar a pressão de vapor fornecida pela caldeira melhora o regime da turbina, reduz ciclos de fadiga e otimiza a extração de vapor para processo. O Leaf atua na caldeira, não na turbina.'
+  },
+  {
+    icon: '❄️',
+    bg: '#E1F5EE', border: '#0F6E56',
+    num: '04', name: 'Sistema de resfria\u0002mento', tag: 'Utilidade',
+    title: 'Sistema de resfriamento (condensador)',
+    desc: 'Em usinas de condensação, o vapor exausto da turbina é condensado em torres de resfriamento ou condensadores a ar. A água condensada (água de alimentação) é tratada, pré-aquecida em economizadores e retorna à caldeira. O tratamento químico (pH, condutividade, sílica, O₂ dissolvido) é crítico para evitar corrosão e incrustações nos tubos da caldeira.',
+    items: [
+      {label: 'Variáveis-chave', value: 'Temperatura de condensação, vácuo do condensador, vazão de água de resfriamento'},
+      {label: 'Qualidade da água', value: 'pH, condutividade, O₂ dissolvido, sílica'},
+      {label: 'Equipamentos', value: 'Torres de resfriamento, deaerador, bombas de condensado'},
+      {label: 'Instrumentação', value: 'Analisadores online de qualidade de água, transmissores de pressão/temp.'},
+    ],
+    apc: 'Oportunidade Leaf (secundária): otimização do vácuo do condensador (impacta eficiência da turbina) e controle de dosagem de produtos químicos de tratamento de água — integrado ao controle da caldeira.'
+  },
+  {
+    icon: '💨',
+    bg: '#FAEEDA', border: '#BA7517',
+    num: '05', name: 'Controle de gases', tag: 'Emissões',
+    title: 'Tratamento de gases e controle de emissões',
+    desc: 'Os gases de combustão (200–350°C na saída da câmara) passam por economizadores (recuperação de calor para pré-aquecer a água de alimentação), pré-aquecedores de ar e sistemas de controle de emissões: ciclones, filtros de manga, precipitadores eletrostáticos (material particulado), e sistemas de injeção de uréia ou SNCR (NOx). O monitoramento contínuo de emissões (CEMS) é exigência regulatória crescente em toda LATAM.',
+    items: [
+      {label: 'Poluentes monitorados', value: 'NOx, SOx, CO, material particulado, CO₂'},
+      {label: 'Sistemas típicos', value: 'Filtro de manga, ciclone, SNCR para NOx, lavadores'},
+      {label: 'Regulação', value: 'CONAMA 316 (BR), normas estaduais de emissão atmosférica'},
+      {label: 'Tendência', value: 'Pressão crescente por mercado de carbono (Lei 15.042/2024)'},
+    ],
+    apc: 'Oportunidade Leaf: controle preditivo de NOx (modulando temperatura de câmara e injeção de uréia), otimização da combustão para minimizar CO — reduz custo regulatório e abre receita de crédito de carbono.'
+  },
+  {
+    icon: '⚡',
+    bg: '#EEEDFE', border: '#534AB7',
+    num: '06', name: 'Saída e despacho', tag: 'Grid/PPA',
+    title: 'Geração, medição e despacho ao sistema',
+    desc: 'A energia gerada é elevada em tensão pelo transformador de potência e injetada na rede (subestação de saída). O ponto de medição (CCEE) registra MWh gerados para liquidação no mercado de energia. Em usinas com PPA (contrato de energia), há obrigação de despacho mínimo — instabilidades da caldeira que reduzem geração abaixo do contratado geram penalidades financeiras significativas. Esse risco é o principal argumento econômico para APC no setor.',
+    items: [
+      {label: 'Receita típica', value: 'R$ 200–320/MWh (mercado livre), R$ 180–240/MWh (regulado)'},
+      {label: 'Penalidade por desvio', value: 'Até 3× o preço de liquidação das diferenças (PLD) sobre o déficit'},
+      {label: 'SCADA de despacho', value: 'OSIsoft PI, Honeywell Experion, sistemas proprietários ONS'},
+      {label: 'Argumento Leaf', value: 'Cada 1% de ganho em disponibilidade = R$ 0,5–2M/ano por usina'},
+    ],
+    apc: 'Argumento comercial central: estabilidade de geração garante cumprimento de PPA e evita penalidades. Eficiência (+0,5–1% heat rate) em usinas de 30 MW gera ~R$ 300–600 mil/ano de receita adicional — ROI claro para precificação do Leaf.'
+  }
+];
+
+const flow = document.getElementById('flow');
+const panel = document.getElementById('detail-panel');
+const dtitle = document.getElementById('detail-title');
+const ddesc = document.getElementById('detail-desc');
+const dgrid = document.getElementById('detail-grid');
+const dapc = document.getElementById('detail-apc');
+let active = null;
+
+steps.forEach((s, i) => {
+  const stepEl = document.createElement('div');
+  stepEl.className = 'step';
+  stepEl.innerHTML = `
+    <div class="step-icon" style="background:${s.bg};border-color:${s.border}">${s.icon}</div>
+    <div class="step-num">${s.num}</div>
+    <div class="step-name">${s.name}</div>
+    <div class="step-tag">${s.tag}</div>
+  `;
+  stepEl.addEventListener('click', () => {
+    if (active === i) {
+      panel.classList.remove('open');
+      active = null;
+      stepEl.querySelector('.step-icon').style.boxShadow = '';
+      return;
+    }
+    document.querySelectorAll('.step-icon').forEach(el => el.style.boxShadow = '');
+    stepEl.querySelector('.step-icon').style.boxShadow = `0 0 0 3px ${s.border}`;
+    active = i;
+    dtitle.textContent = s.title;
+    ddesc.textContent = s.desc;
+    dgrid.innerHTML = s.items.map(it => `
+      <div class="detail-item">
+        <div class="detail-item-label">${it.label}</div>
+        <div class="detail-item-value">${it.value}</div>
+      </div>
+    `).join('');
+    dapc.innerHTML = `<span class="tag-apc">${s.apc}</span>`;
+    panel.classList.add('open');
+  });
+  flow.appendChild(stepEl);
+
+  if (i < steps.length - 1) {
+    const arr = document.createElement('div');
+    arr.className = 'arrow';
+    arr.innerHTML = `<svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M12 6l4 4-4 4" stroke="var(--color-border-secondary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    flow.appendChild(arr);
+  }
+});
+</script>
