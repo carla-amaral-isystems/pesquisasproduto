@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaf — Central de Pesquisas de Mercado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #0D0F0E;
+    --bg2:       #131614;
+    --bg3:       #191C1A;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --green:     #4AE54A;
+    --green-dim: #2A8A2A;
+    --green-bg:  rgba(74,229,74,0.06);
+    --text:      #E8EDE9;
+    --text2:     #8A9B8C;
+    --text3:     #556057;
+    --accent:    #B8F5B8;
+    --tag-bg:    rgba(74,229,74,0.08);
+    --card-bg:   #141714;
+    --card-hover:#181D18;
+    --shadow:    0 1px 3px rgba(0,0,0,.5), 0 8px 32px rgba(0,0,0,.4);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: .5;
+  }
+
+  /* ── GRID LINES ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(74,229,74,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,229,74,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 56px 0 0;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .logo-area {}
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green-bg);
+    border: 1px solid rgba(74,229,74,0.2);
+    border-radius: 100px;
+    padding: 4px 12px 4px 8px;
+    margin-bottom: 20px;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--green); }
+    50%       { opacity: .5; box-shadow: 0 0 3px var(--green); }
+  }
+
+  .logo-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    color: var(--green);
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -.02em;
+    color: var(--text);
+    max-width: 600px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    padding-top: 16px;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: .04em;
+  }
+
+  .meta-item span { color: var(--text2); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2) 20%, var(--border2) 80%, transparent);
+    margin: 40px 0;
+  }
+
+  /* ── STATS ROW ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 56px;
+  }
+
+  .stat {
+    background: var(--bg2);
+    padding: 20px 24px;
+    transition: background .2s;
+  }
+
+  .stat:hover { background: var(--bg3); }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: .03em;
+    line-height: 1.4;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 20px; height: 1px;
+    background: var(--green-dim);
+  }
+
+  /* ── FEATURED CARD ── */
+  .featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 680px) {
+    .featured { grid-template-columns: 1fr; }
+  }
+
+  .featured-card {
+    background: var(--card-bg);
+    padding: 32px;
+    cursor: pointer;
+    transition: background .2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .featured-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74,229,74,.06), transparent 70%);
+    pointer-events: none;
+    transition: opacity .3s;
+    opacity: 0;
+  }
+
+  .featured-card:hover { background: var(--card-hover); }
+  .featured-card:hover::before { opacity: 1; }
+
+  .featured-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--tag-bg);
+    border: 1px solid rgba(74,229,74,.15);
+    border-radius: 100px;
+    padding: 3px 10px;
+    margin-bottom: 16px;
+  }
+
+  .featured-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .featured-card p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .04em;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  .status-dot.done   { background: var(--green); }
+  .status-dot.wip    { background: #E5A832; }
+  .status-dot.empty  { background: var(--text3); opacity: .4; }
+
+  .card-arrow {
+    font-size: 16px;
+    color: var(--text3);
+    transition: transform .2s, color .2s;
+  }
+
+  .featured-card:hover .card-arrow {
+    transform: translate(3px, -3px);
+    color: var(--green);
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .research-card {
+    background: var(--card-bg);
+    padding: 24px;
+    cursor: pointer;
+    transition: background .2s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .research-card:hover { background: var(--card-hover); }
+
+  .research-card.disabled {
+    cursor: default;
+    opacity: .5;
+  }
+
+  .research-card.disabled:hover { background: var(--card-bg); }
+
+  .card-icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .card-content { flex: 1; }
+
+  .card-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+
+  .research-card h3 {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  .research-card p {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.55;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 2px 7px;
+  }
+
+  /* ── CONSTRAINT BANNER ── */
+  .constraint-banner {
+    background: rgba(229,168,50,.05);
+    border: 1px solid rgba(229,168,50,.15);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 56px;
+  }
+
+  .constraint-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  .constraint-text {
+    font-size: 12px;
+    color: #C49A2A;
+    line-height: 1.6;
+  }
+
+  .constraint-text strong { color: #E5C060; font-weight: 600; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 0 48px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text3);
+  }
+
+  .footer-brand em { font-style: italic; color: var(--green-dim); }
+
+  .footer-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .04em;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* ── ENTRY ANIMATION ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp .5s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .d1 { animation-delay: .05s; }
+  .d2 { animation-delay: .12s; }
+  .d3 { animation-delay: .20s; }
+  .d4 { animation-delay: .28s; }
+  .d5 { animation-delay: .36s; }
+  .d6 { animation-delay: .44s; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="fade-up d1">
+    <div class="header-inner">
+      <div class="logo-area">
+        <div class="logo-badge">
+          <div class="logo-dot"></div>
+          <span class="logo-text">iSystems · Leaf APC</span>
+        </div>
+        <h1>Central de<br><em>Pesquisas</em><br>de Mercado</h1>
+      </div>
+      <div class="header-meta">
+        <div class="meta-item">Foco geográfico: <span>LATAM</span></div>
+        <div class="meta-item">Produto: <span>Leaf APC</span></div>
+        <div class="meta-item">Atualizado em: <span id="date-now"></span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="divider fade-up d2"></div>
+
+  <!-- STATS -->
+  <div class="stats fade-up d2">
+    <div class="stat">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Setores avaliados</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Setores descartados</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Oportunidades Alta</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Países mapeados</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">≥1s</div>
+      <div class="stat-label">Restrição de atualização do Leaf</div>
+    </div>
+  </div>
+
+  <!-- CONSTRAINT BANNER -->
+  <div class="constraint-banner fade-up d3">
+    <div class="constraint-icon">⚠️</div>
+    <div class="constraint-text">
+      <strong>Restrição técnica documentada:</strong> O Leaf possui taxa de atualização mínima de 1 segundo. Processos que exigem atuações abaixo de 1s são incompatíveis. <strong>Siderurgia</strong> foi testada e descartada por esse motivo. Hidrelétrica também descartada (fit técnico baixo).
+    </div>
+  </div>
+
+  <!-- FEATURED: PESQUISAS APROFUNDADAS -->
+  <div class="section-header fade-up d3">
+    <div class="section-title">Pesquisas aprofundadas</div>
+  </div>
+
+  <div class="featured fade-up d3">
+    <a class="featured-card" href="latam-novos-mercados.html">
+      <div class="featured-tag">Visão geral · 12 setores</div>
+      <h2>Novos Mercados LATAM para o Leaf</h2>
+      <p>Análise setorial comparativa com scoring de fit técnico, resistência de entrada e compatibilidade com a restrição de 1s. Inclui tabela-ranking interativa e análise por setor.</p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot done"></div>
+          Concluído
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a class="featured-card" href="termeletrica-biomassa.html">
+      <div class="featured-tag">Aprofundamento · Setor #1</div>
+      <h2>Termelétricas a Biomassa</h2>
+      <p>Mercado de 18,3 GW e 653 usinas no Brasil. Análise detalhada do processo de geração, subgrupos não-sucroenergéticos (licor negro e resíduos florestais), pipeline de projetos e go-to-market.</p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot done"></div>
+          Concluído
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="featured fade-up d4" style="margin-bottom:40px">
+    <a class="featured-card" href="ceramica-industrial.html">
+      <div class="featured-tag">Aprofundamento · Setor #3</div>
+      <h2>Cerâmica Industrial</h2>
+      <p>Mercado de US$ 5,2 bi no Brasil (3º produtor mundial). Análise do processo (forno a rolos, spray dryer), principais empresas (Portobello, Eliane, Lamosa, Corona), TAM/SAM/SOM e go-to-market por polo geográfico.</p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot done"></div>
+          Concluído
+        </div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </a>
+
+    <a class="featured-card disabled" href="#">
+      <div class="featured-tag">Aprofundamento · Setor #2</div>
+      <h2>Vidro Industrial</h2>
+      <p>Container glass e flat glass. México (tequila boom), Brasil e Colômbia. Fornos de fusão de alta inércia térmica — processo ideal para o Leaf.</p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot wip"></div>
+          Em breve
+        </div>
+        <div class="card-arrow" style="opacity:.3">↗</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- TODOS OS SETORES -->
+  <div class="section-header fade-up d4">
+    <div class="section-title">Todos os setores avaliados</div>
+  </div>
+
+  <div class="card-grid fade-up d5">
+
+    <a class="research-card" href="termeletrica-biomassa.html">
+      <div class="card-icon">🌿</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #1 · Oportunidade Alta</div>
+        <h3>Geração Termelétrica a Biomassa</h3>
+        <p>18,3 GW · 653 usinas · Brasil, Argentina. Caldeiras de leito fluidizado com variabilidade de combustível.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Baixa</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot done"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🪟</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #2 · Oportunidade Alta</div>
+        <h3>Vidro Industrial</h3>
+        <p>Container glass e flat glass. México, Brasil, Colômbia. Fornos de fusão com altíssima inércia térmica.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Baixa–Média</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card" href="ceramica-industrial.html">
+      <div class="card-icon">🏺</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #3 · Oportunidade Alta</div>
+        <h3>Cerâmica Industrial</h3>
+        <p>Revestimentos, sanitários. US$ 5,2 bi BR. Polos SC e SP. Gás = 40% do custo de produção.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Baixa</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot done"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">💧</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #4 · Oportunidade Alta</div>
+        <h3>Tratamento de Água e Efluentes</h3>
+        <p>ETEs industriais e grandes ETAs. Aeração = 50–70% do OPEX. Brasil, Chile, México.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Baixa–Média</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🌱</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #5 · Oportunidade Alta</div>
+        <h3>Biodiesel · Etanol de Milho · HVO</h3>
+        <p>Biocombustíveis avançados. Brasil, Argentina, Paraguai. Próximo da sucroenergia — mesmos integradores.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Baixa–Média</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🐟</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #6 · Oportunidade Média-Alta</div>
+        <h3>Aquicultura — Ração e Processamento</h3>
+        <p>Chile (salmão) e Equador (camarão). Extrusoras de ração com cultura digital madura.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Média</span>
+          <span class="chip">Resist: Baixa</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🧵</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #7 · Oportunidade Média</div>
+        <h3>Têxtil — Acabamento Contínuo</h3>
+        <p>Rame, mercerização, tinturaria. Brasil, Colômbia, Peru. Avaliar bateladas limítrofes (≥5h).</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Média</span>
+          <span class="chip">Resist: Baixa</span>
+          <span class="chip">1s: ⚠ Parcial</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🔩</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #8 · Oportunidade Média</div>
+        <h3>Polímeros 2ª Geração e Compounding</h3>
+        <p>Extrusoras, masterbatches, borracha. Grandes players já têm APC; foco em transformadores.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Média</span>
+          <span class="chip">1s: ⚠ Parcial</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">⛽</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #9 · Oportunidade Média</div>
+        <h3>O&G Midstream — Processamento de Gás</h3>
+        <p>Torres de aminas, fracionamento. Vaca Muerta (AR), Camisea (PE). Compressores: avaliar malhas.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Média–Alta</span>
+          <span class="chip">1s: ⚠ Parcial</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🌲</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #10 · Oportunidade Média-Baixa</div>
+        <h3>Papel e Celulose</h3>
+        <p>Alta competição de Valmet/ABB. Focar em plantas de papel médio porte sem APC instalado.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Alta</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🏭</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #11 · Oportunidade Média-Baixa</div>
+        <h3>Refino — Unidades Auxiliares</h3>
+        <p>Utilidades, ETEs e fornos auxiliares de refinarias. Cavalo-de-troia onde Honeywell/Aspen não atuam.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Alta</span>
+          <span class="chip">Resist: Alta</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+    <a class="research-card disabled" href="#">
+      <div class="card-icon">🥃</div>
+      <div class="card-content">
+        <div class="card-tag">Setor #12 · Oportunidade Média-Baixa</div>
+        <h3>Destilarias Industriais</h3>
+        <p>Tequila, rum, cachaça industrial. Apenas grandes destilarias com destilação contínua são endereçáveis.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip">Fit: Baixa–Média</span>
+          <span class="chip">Resist: Baixa</span>
+          <span class="chip">1s: ✓</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot empty"></div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- DESCARTADOS -->
+  <div class="section-header fade-up d5" style="margin-top:40px">
+    <div class="section-title">Descartados</div>
+  </div>
+
+  <div class="card-grid fade-up d5" style="margin-bottom:56px">
+    <div class="research-card disabled">
+      <div class="card-icon">⚙️</div>
+      <div class="card-content">
+        <div class="card-tag">Descartado · Testado</div>
+        <h3>Siderurgia</h3>
+        <p>Testado em campo. Malhas críticas (FEA, laminação) exigem atuações abaixo de 1s — incompatível com o Leaf.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip" style="color:#8A4040;border-color:rgba(138,64,64,.3)">1s: ✗ Incompatível</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot" style="background:#8A4040"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="research-card disabled">
+      <div class="card-icon">💧</div>
+      <div class="card-content">
+        <div class="card-tag">Descartado · Fit técnico</div>
+        <h3>Geração Hidrelétrica</h3>
+        <p>Controle eletromecânico de velocidade/frequência — sem variáveis físico-químicas de processo onde o fuzzy produz ganho.</p>
+      </div>
+      <div class="card-meta">
+        <div class="card-chips">
+          <span class="chip" style="color:#8A4040;border-color:rgba(138,64,64,.3)">Fit: Baixo</span>
+        </div>
+        <div class="card-status">
+          <div class="status-dot" style="background:#8A4040"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="fade-up d6">
+    <div class="footer-brand">Leaf <em>Market Intel</em></div>
+    <div class="footer-meta">
+      iSystems · Uso interno<br>
+      Gerado com Claude · <span id="year"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Datas dinâmicas
+  const now = new Date();
+  const opts = { day: '2-digit', month: 'short', year: 'numeric' };
+  document.getElementById('date-now').textContent = now.toLocaleDateString('pt-BR', opts);
+  document.getElementById('year').textContent = now.getFullYear();
+</script>
+
+</body>
+</html>
