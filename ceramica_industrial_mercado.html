@@ -1,0 +1,302 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+
+.page-title{font-size:16px;font-weight:500;padding:1.5rem 0 .25rem}
+.page-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.5rem}
+
+.tabs{display:flex;gap:6px;margin-bottom:1.5rem;border-bottom:.5px solid var(--color-border-tertiary)}
+.tab{font-size:12px;font-weight:500;padding:7px 14px;border-radius:6px 6px 0 0;cursor:pointer;color:var(--color-text-secondary);border:.5px solid transparent;border-bottom:none;margin-bottom:-1px;transition:all .15s}
+.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-tertiary);border-bottom-color:var(--color-background-primary)}
+.tab:not(.active):hover{background:var(--color-background-secondary)}
+.panel{display:none}.panel.active{display:block}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem 1rem}
+.metric-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.metric-value{font-size:20px;font-weight:500}
+.metric-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.metric-accent{color:#0F6E56}
+
+.section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-secondary);margin-bottom:.75rem;margin-top:1.25rem;padding-top:1.25rem;border-top:.5px solid var(--color-border-tertiary)}
+.section-label:first-of-type{border-top:none;padding-top:0;margin-top:0}
+
+/* TAM FUNNEL */
+.funnel{display:flex;flex-direction:column;gap:6px;margin-bottom:1.5rem}
+.funnel-row{display:flex;align-items:center;gap:10px}
+.funnel-bar-wrap{flex:1;background:var(--color-background-secondary);border-radius:4px;height:36px;overflow:hidden;position:relative}
+.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 12px;transition:width .3s}
+.funnel-label{font-size:11px;font-weight:500;color:#fff;white-space:nowrap}
+.funnel-value{font-size:11px;font-weight:500;min-width:90px;text-align:right;color:var(--color-text-secondary)}
+.funnel-desc{font-size:10px;color:var(--color-text-secondary);min-width:140px}
+
+/* COUNTRY TABLE */
+.country-table{width:100%;border-collapse:collapse;font-size:12px}
+.country-table th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);font-weight:500;padding:5px 8px;text-align:left;border-bottom:.5px solid var(--color-border-tertiary)}
+.country-table td{padding:8px 8px;border-bottom:.5px solid var(--color-border-tertiary);vertical-align:middle}
+.country-table tr:last-child td{border-bottom:none}
+.mini-bar-bg{background:var(--color-background-secondary);border-radius:3px;height:5px;width:100px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
+.mini-bar{height:5px;border-radius:3px;background:#1D9E75;display:block}
+.pill{font-size:10px;padding:2px 7px;border-radius:100px;font-weight:500;display:inline-block}
+.pill-br{background:#EAF3DE;color:#27500A}
+.pill-mx{background:#E6F1FB;color:#185FA5}
+.pill-co{background:#FAEEDA;color:#633806}
+.pill-ar{background:#EEEDFE;color:#534AB7}
+.pill-pe{background:#FAECE7;color:#712B13}
+.pill-cl{background:#E1F5EE;color:#085041}
+
+/* COMPANY GRID */
+.company-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.company-card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.125rem;cursor:pointer;transition:border-color .15s}
+.company-card:hover,.company-card.open{border-color:var(--color-border-secondary)}
+.company-card.open{border-color:var(--color-border-primary)}
+.company-header{display:flex;align-items:flex-start;gap:10px}
+.co-icon{width:36px;height:36px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.co-name{font-size:13px;font-weight:500;line-height:1.3}
+.co-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;line-height:1.4}
+.co-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag{font-size:10px;padding:2px 7px;border-radius:100px;border:.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.co-detail{display:none;margin-top:10px;padding-top:10px;border-top:.5px solid var(--color-border-tertiary);font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.co-detail.open{display:block}
+.drow{display:flex;gap:6px;margin-bottom:5px}
+.dk{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-secondary);min-width:80px;margin-top:1px;flex-shrink:0}
+.dv{font-size:11px;color:var(--color-text-primary)}
+.leaf-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;margin-top:6px;background:#E1F5EE;color:#085041}
+
+/* PROCESSO */
+.processo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.proc-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem 1rem}
+.proc-title{font-size:12px;font-weight:500;margin-bottom:4px}
+.proc-body{font-size:11px;color:var(--color-text-secondary);line-height:1.6}
+.proc-apc{font-size:10px;margin-top:8px;padding:3px 8px;border-radius:100px;background:#E1F5EE;color:#085041;display:inline-block;font-weight:500}
+
+/* GTM */
+.gtm-list{display:flex;flex-direction:column;gap:8px}
+.gtm-item{display:flex;gap:10px;align-items:flex-start;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem 1rem}
+.gtm-num{font-size:13px;font-weight:500;color:var(--color-text-secondary);min-width:22px;margin-top:1px}
+.gtm-body{font-size:12px;line-height:1.6;color:var(--color-text-secondary)}
+.gtm-body strong{color:var(--color-text-primary);font-weight:500}
+
+@media(prefers-color-scheme:dark){
+  .pill-br{background:#173404;color:#C0DD97}
+  .pill-mx{background:#042C53;color:#85B7EB}
+  .pill-co{background:#412402;color:#FAC775}
+  .pill-ar{background:#26215C;color:#AFA9EC}
+  .pill-pe{background:#4A1B0C;color:#F0997B}
+  .pill-cl{background:#04342C;color:#9FE1CB}
+  .leaf-tag{background:#04342C;color:#9FE1CB}
+  .proc-apc{background:#04342C;color:#9FE1CB}
+}
+</style>
+
+<div class="page-title">Cerâmica industrial — revestimentos, sanitários e técnica</div>
+<div class="page-sub">Mercado LATAM, tamanho potencial endereçável pelo Leaf e principais empresas-alvo.</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="show('tam')">📐 Tamanho de mercado</div>
+  <div class="tab" onclick="show('paises')">🌎 Países LATAM</div>
+  <div class="tab" onclick="show('empresas')">🏭 Empresas-alvo</div>
+  <div class="tab" onclick="show('processo')">⚙️ Processo e Leaf</div>
+  <div class="tab" onclick="show('gtm')">🎯 Go-to-market</div>
+</div>
+
+<!-- TAB 1: TAM -->
+<div class="panel active" id="panel-tam">
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Mercado BR (2023, IMARC)</div><div class="metric-value metric-accent">US$ 5,2 bi</div><div class="metric-sub">3º maior produtor mundial</div></div>
+    <div class="metric"><div class="metric-label">Projeção BR 2032</div><div class="metric-value">US$ 7,6 bi</div><div class="metric-sub">CAGR 4,1% ao ano</div></div>
+    <div class="metric"><div class="metric-label">Produção BR 2025</div><div class="metric-value">807 mi m²</div><div class="metric-sub">60 empresas · 71 fábricas · 137 marcas</div></div>
+    <div class="metric"><div class="metric-label">Gás natural: % do custo</div><div class="metric-value">~40%</div><div class="metric-sub">2º maior consumidor industrial BR</div></div>
+    <div class="metric"><div class="metric-label">Forno consome</div><div class="metric-value">70%</div><div class="metric-sub">do gás natural total da fábrica</div></div>
+  </div>
+
+  <div class="section-label">Funil TAM → SAM → SOM para o Leaf</div>
+  <div class="funnel" id="funnel"></div>
+
+  <div class="section-label">Por que gás natural é o argumento comercial central</div>
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;font-size:12px;line-height:1.7;color:var(--color-text-secondary)">
+    <p>A energia térmica representa cerca de <strong style="color:var(--color-text-primary)">40% do custo de produção</strong> de um revestimento cerâmico — e o gás natural responde por praticamente todo esse custo. O forno a rolos consome <strong style="color:var(--color-text-primary)">70% do gás natural total da fábrica</strong>, e o spray dryer (atomizador) consome outros 20–25%. As variações de temperatura por zona, a relação ar/gás e a curva de queima são controladas atualmente com PID simples ou ajuste manual — sem nenhuma camada APC supervisória na esmagadora maioria das fábricas.</p>
+    <p style="margin-top:.5rem">Em uma fábrica de 10 mi m²/ano (porte médio), um ganho de eficiência de 3–5% no consumo de gás representa <strong style="color:var(--color-text-primary)">R$ 1,5–3 mi/ano</strong> em economia direta — ROI do Leaf em menos de 12 meses.</p>
+  </div>
+</div>
+
+<!-- TAB 2: PAÍSES -->
+<div class="panel" id="panel-paises">
+  <table class="country-table">
+    <thead><tr>
+      <th>País</th><th>Posição no setor</th><th>Produção estimada</th><th>Potencial relativo</th><th>Principais players locais</th><th>Maturidade APC</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="pill pill-br">🇧🇷 Brasil</span></td>
+        <td>3º produtor mundial · 3º consumidor</td>
+        <td>807 mi m²/ano<br><span style="font-size:10px;color:var(--color-text-secondary)">60 empresas · 71 fábricas</span></td>
+        <td><div style="display:flex;align-items:center"><div class="mini-bar-bg"><div class="mini-bar" style="width:100%"></div></div></div></td>
+        <td style="font-size:11px">Portobello, Eliane, Cecrisa/Portinari, Elizabeth, Incepa, Cedasa, Gyotoku, Ceusa</td>
+        <td><span class="pill" style="background:#FCEBEB;color:#791F1F;font-size:10px">Quase zero</span></td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-mx">🇲🇽 México</span></td>
+        <td>Grande produtor · hub LATAM da Lamosa</td>
+        <td>~200 mi m²/ano<br><span style="font-size:10px;color:var(--color-text-secondary)">9 fábricas Lamosa + outros</span></td>
+        <td><div style="display:flex;align-items:center"><div class="mini-bar-bg"><div class="mini-bar" style="width:62%"></div></div></div></td>
+        <td style="font-size:11px">Lamosa, Porcelanite, Daltile/Mohawk, Vitromex, Interceramic</td>
+        <td><span class="pill" style="background:#FCEBEB;color:#791F1F;font-size:10px">Quase zero</span></td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-co">🇨🇴 Colômbia</span></td>
+        <td>Produtor regional — exporta para Andinos</td>
+        <td>~40–60 mi m²/ano<br><span style="font-size:10px;color:var(--color-text-secondary)">Corona lidera</span></td>
+        <td><div style="display:flex;align-items:center"><div class="mini-bar-bg"><div class="mini-bar" style="width:28%"></div></div></div></td>
+        <td style="font-size:11px">Corona (US$ 120 mi inv. 2024), Lamosa (San Lorenzo), Alfagres, Graiman</td>
+        <td><span class="pill" style="background:#FCEBEB;color:#791F1F;font-size:10px">Incipiente</span></td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-ar">🇦🇷 Argentina</span></td>
+        <td>Produtor regional — fábricas Lamosa</td>
+        <td>~30–50 mi m²/ano<br><span style="font-size:10px;color:var(--color-text-secondary)">volatilidade econômica</span></td>
+        <td><div style="display:flex;align-items:center"><div class="mini-bar-bg"><div class="mini-bar" style="width:20%"></div></div></div></td>
+        <td style="font-size:11px">Lamosa (Euro Cerámica, Cordillera), Alberdi, Alfa</td>
+        <td><span class="pill" style="background:#FCEBEB;color:#791F1F;font-size:10px">Incipiente</span></td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-pe">🇵🇪 Peru</span></td>
+        <td>Consumidor + produtor emergente</td>
+        <td>~20–35 mi m²/ano<br><span style="font-size:10px;color:var(--color-text-secondary)">importa e produz</span></td>
+        <td><div style="display:flex;align-items:center"><div class="mini-bar-bg"><div class="mini-bar" style="width:15%"></div></div></div></td>
+        <td style="font-size:11px">Lamosa (San Lorenzo), Cerámicas San Lorenzo, Graiman</td>
+        <td><span class="pill" style="background:#FCEBEB;color:#791F1F;font-size:10px">Incipiente</span></td>
+      </tr>
+      <tr>
+        <td><span class="pill pill-cl">🇨🇱 Chile</span></td>
+        <td>100% importador — não produz localmente</td>
+        <td>US$ 549 mi consumo (2024)<br><span style="font-size:10px;color:var(--color-text-secondary)">importa de BR, CN, AR, PE</span></td>
+        <td><div style="display:flex;align-items:center"><div class="mini-bar-bg"><div class="mini-bar" style="width:10%"></div></div></div></td>
+        <td style="font-size:11px">Sem produção local — fora do escopo Leaf</td>
+        <td><span class="pill" style="background:#F1EFE8;color:#5F5E5A;font-size:10px">N/A</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px;color:var(--color-text-secondary);margin-top:.75rem">Chile não produz cerâmica localmente — 100% importado. Fora do escopo do Leaf (não há plantas industriais a otimizar). Foco de entrada: Brasil (polo SP e SC), México (Monterrey), Colômbia (Valle del Cauca/Zipaquirá).</p>
+</div>
+
+<!-- TAB 3: EMPRESAS -->
+<div class="panel" id="panel-empresas">
+  <div class="company-grid" id="co-grid"></div>
+</div>
+
+<!-- TAB 4: PROCESSO -->
+<div class="panel" id="panel-processo">
+  <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem">O processo de revestimento cerâmico (via seca ou via úmida) é contínuo 24/7 com quatro etapas de alto consumo de gás natural — todas com variáveis lentas e plenamente compatíveis com a taxa de 1s do Leaf.</p>
+  <div class="processo-grid" id="proc-grid"></div>
+</div>
+
+<!-- TAB 5: GTM -->
+<div class="panel" id="panel-gtm">
+  <div class="gtm-list" id="gtm-list"></div>
+</div>
+
+<script>
+// FUNNEL DATA
+const funnelData = [
+  { label: 'TAM — Mercado total de cerâmica Brasil + México + Colômbia', value: '~US$ 8 bi/ano', pct: 100, color: '#1D9E75', desc: 'Valor de mercado dos revestimentos produzidos' },
+  { label: 'SAM — Fábricas com forno a rolos, instrumentação e OPC (≥10 mi m²/ano)', value: '~120–150 plantas', pct: 55, color: '#0F6E56', desc: 'Plantas de porte médio-grande com infraestrutura compatível com Leaf' },
+  { label: 'SOM — Plantas sem APC, alcançáveis em 3 anos (preço Leaf ~R$ 300–600k/planta)', value: 'R$ 30–60 mi ARR', pct: 22, color: '#085041', desc: 'Estimativa conservadora: penetrar 20–30% do SAM em 3 anos' },
+];
+
+const funnel = document.getElementById('funnel');
+funnelData.forEach(f => {
+  const row = document.createElement('div');
+  row.className = 'funnel-row';
+  row.innerHTML = `
+    <div style="min-width:140px;font-size:11px;color:var(--color-text-secondary);line-height:1.4">${f.desc}</div>
+    <div class="funnel-bar-wrap">
+      <div class="funnel-bar" style="width:${f.pct}%;background:${f.color}">
+        <span class="funnel-label">${f.label}</span>
+      </div>
+    </div>
+    <div class="funnel-value">${f.value}</div>
+  `;
+  funnel.appendChild(row);
+});
+
+// COMPANIES
+const companies = [
+  { icon:'🏺', bg:'#EAF3DE', name:'Portobello', sub:'Maior empresa BR de revestimentos — Tijucas SC. Receita R$ 2,4 bi (2024)', tags:['Tijucas SC','42 mi m²/ano','2 fábricas BR + 1 EUA','Capital aberto B3'], mw:'2 fábricas no Brasil (Tijucas SC)', dcs:'SACMI + Siemens — DCS com OPC', dor:'Variabilidade de tonalidade e calibre em grandes formatos (120x120, 120x240) — exige curva térmica extremamente estável', leaf:'Controle de curva térmica do forno por zona para grandes formatos. Argumento: redução de defeitos de tonalidade = menos retrabalho e rejeito' },
+  { icon:'🏺', bg:'#EAF3DE', name:'Eliane (Mohawk Industries)', sub:'Maior catálogo do Brasil — 280+ linhas. Cocal do Sul SC', tags:['Cocal do Sul SC','3 fábricas Eliane','Grupo Mohawk','Premium a econômico'], mw:'3 plantas em Cocal do Sul SC', dcs:'Automação OEM SACMI — DCS com OPC disponível', dor:'Volume gigante de SKUs: transições de lote são frequentes e cada transição gera rejeito e consumo extra de gás na estabilização', leaf:'APC para redução do tempo de estabilização em troca de lote — cada hora economizada em 3 fornos = R$ 50–80 mil/ano em gás e rejeito' },
+  { icon:'🏺', bg:'#EAF3DE', name:'Cecrisa / Portinari (Durafloor)', sub:'Premium — Criciúma SC. Capacidade 20 mi m²/ano', tags:['Criciúma SC','Premium','Grupo Durafloor','Porcelanato técnico'], mw:'Múltiplas plantas em Criciúma SC e MG', dcs:'SACMI / Siemens', dor:'Porcelanato técnico (piso industrial) exige tolerância dimensional muito estreita — curva térmica do forno é crítica', leaf:'Controle fino de temperatura por zona para manutenção de tolerância dimensional. Diferencial competitivo tangível para o cliente final' },
+  { icon:'🏺', bg:'#EAF3DE', name:'Elizabeth Porcelanato', sub:'Líder em custo-benefício — João Pessoa PB. PEI 3–5', tags:['João Pessoa PB','Nordeste','Alto volume','PEI 3-5'], mw:'Fábrica em João Pessoa PB', dcs:'A confirmar — fábrica de grande volume', dor:'Operação de alto volume com pressão de custo: gás natural no Nordeste tem custo diferenciado — eficiência energética é prioridade', leaf:'Otimização do heat rate no forno e no spray dryer com ROI rápido pelo custo de gás mais alto no Nordeste' },
+  { icon:'🏺', bg:'#EAF3DE', name:'Cedasa (Majopar / Vistabella)', sub:'60 mi m²/ano — fábrica única. Polo de Santa Gertrudes SP', tags:['Santa Gertrudes SP','60 mi m²/ano','Via seca','Uma fábrica'], mw:'Uma fábrica em Santa Gertrudes SP — 60 mi m²/ano', dcs:'Automação via seca (SACMI/LB)', dor:'Operação de alto volume em linha única — qualquer instabilidade do forno impacta toda a produção. Sazonalidade de argila impacta curva de queima', leaf:'Alta alavancagem: fábrica única de grande volume = impacto máximo de APC em uma só instalação. Case study perfeito' },
+  { icon:'🏺', bg:'#FAEEDA', name:'Grupo Lamosa', sub:'2º maior produtor LATAM — 195 mi m²/ano. México + 10 plantas SA', tags:['México','9 fábricas MX','10 plantas SA','Argentina · Colômbia · Peru · BR'], mw:'50 plantas em 9 países. México é o core industrial', dcs:'Mix SACMI, Siemens, Schneider por planta', dor:'Heterogeneidade de matéria-prima entre fábricas e países gera variabilidade de qualidade entre linhas. Pressão de eficiência por escala', leaf:'Oportunidade de roll-out multi-planta: piloto em 1 fábrica MX → expansão para todo o portfólio. ARR potencial >R$ 5 mi só na Lamosa' },
+  { icon:'🏺', bg:'#FAEEDA', name:'Corona (Colômbia)', sub:'40 mi m²/ano — líder colombiano. Nova planta Zipaquirá US$ 120 mi (2024)', tags:['Zipaquirá CO','40 mi m²/ano','Sanitários + revestimentos','Investimento 2024'], mw:'Múltiplas plantas na Colômbia (Valle del Cauca e Cundinamarca)', dcs:'Automação OEM local — provável Siemens/Schneider', dor:'Nova planta 2024 = greenfield sem APC instalado — janela de entrada ideal', leaf:'Entrada no comissionamento da nova planta Zipaquirá: custo de venda menor, nenhum concorrente entrincheirado' },
+  { icon:'🏺', bg:'#FAEEDA', name:'Incepa (Roca Group)', sub:'Porcelanato + sanitários — Campo Largo PR. Grandes formatos', tags:['Campo Largo PR','Roca Group','Grandes formatos','Sanitários'], mw:'Múltiplas fábricas em Campo Largo PR', dcs:'Siemens / SACMI', dor:'Grandes formatos exigem estabilidade térmica excepcional — qualquer variação de temperatura zona a zona gera empenamento e rejeito', leaf:'Argumento de qualidade: controle de empenamento via APC = redução de rejeito de grandes formatos, que têm alto valor agregado' },
+];
+
+const grid = document.getElementById('co-grid');
+companies.forEach((c, i) => {
+  const div = document.createElement('div');
+  div.className = 'company-card';
+  div.innerHTML = `
+    <div class="company-header">
+      <div class="co-icon" style="background:${c.bg}">${c.icon}</div>
+      <div><div class="co-name">${c.name}</div><div class="co-sub">${c.sub}</div></div>
+    </div>
+    <div class="co-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    <div class="co-detail" id="co-${i}">
+      <div class="drow"><span class="dk">Plantas</span><span class="dv">${c.mw}</span></div>
+      <div class="drow"><span class="dk">Automação</span><span class="dv">${c.dcs}</span></div>
+      <div class="drow"><span class="dk">Dor</span><span class="dv">${c.dor}</span></div>
+      <span class="leaf-tag">Leaf: ${c.leaf}</span>
+    </div>
+  `;
+  div.addEventListener('click', () => {
+    const d = document.getElementById('co-'+i);
+    const open = d.classList.contains('open');
+    document.querySelectorAll('.co-detail').forEach(x=>x.classList.remove('open'));
+    document.querySelectorAll('.company-card').forEach(x=>x.classList.remove('open'));
+    if (!open){ d.classList.add('open'); div.classList.add('open'); }
+  });
+  grid.appendChild(div);
+});
+
+// PROCESSO
+const processos = [
+  { title:'1. Atomização (spray dryer)', body:'Argila + água são atomizadas para gerar pó com umidade controlada (~5–6%). Consumo: 20–25% do gás natural total. Variabilidade de umidade do pó afeta a prensagem e todo o processo downstream.', apc:'Controle de umidade do pó atomizado (feedforward de variação de argila → ajuste de temperatura e vazão de gás). Taxa de 1s: ✓ OK' },
+  { title:'2. Prensagem e secagem', body:'O pó atomizado é prensado a ~350–450 bar e as peças seguem para secadores horizontais (gás, 150–200°C). Variabilidade de umidade de saída impacta a curva de queima.', apc:'Controle de temperatura dos secadores horizontais por zona. Minimiza variação de umidade residual pré-forno. Taxa 1s: ✓ OK' },
+  { title:'3. Esmaltação e decoração', body:'Linhas de esmaltação (tinta, engobe, esmalte) e impressoras digitais (Creadigit/inkjet). Processo contínuo — a estabilidade dimensional das peças pré-esmalte influencia a qualidade do esmalte.', apc:'Escopo indireto: APC no forno reduz variação de calibre pré-esmalte, melhorando o registro da impressão digital.' },
+  { title:'4. Forno a rolos (etapa crítica)', body:'Coração do processo. Ciclo de 35–60 min com 3 fases: pré-aquecimento, queima (1150–1230°C) e resfriamento. O forno é dividido em 20–40 zonas independentes, cada uma com queimadores superior e inferior. Consome 70% do gás total da fábrica.', apc:'PRINCIPAL oportunidade Leaf: controle multivariável de temperatura por zona (referência de tonalidade), pressão interna (atmosfera do forno) e relação ar/gás por módulo. Cada 1% de redução de consumo = R$ 500 mil–1,5 mi/ano.' },
+  { title:'5. Seleção e classificação', body:'Peças passam por bancas de seleção óptica (calibre, planeza, tonalidade) e são separadas em lotes homogêneos. Rejeitos e peças de 2ª qualidade representam custo direto.', apc:'APC no forno reduz diretamente a taxa de rejeito — argumento comercial de qualidade além da eficiência energética.' },
+];
+
+const pg = document.getElementById('proc-grid');
+processos.forEach(p => {
+  const d = document.createElement('div');
+  d.className = 'proc-card';
+  d.innerHTML = `<div class="proc-title">${p.title}</div><div class="proc-body">${p.body}</div><div class="proc-apc">${p.apc}</div>`;
+  pg.appendChild(d);
+});
+
+// GTM
+const gtms = [
+  { n:'1', t:'Polo de Santa Gertrudes (SP) como beachhead.', b:'É o maior polo de via seca do mundo fora da Itália/Espanha — dezenas de fábricas em raio de 50 km (Cedasa, Embramaco, Incefra, Cristofoletti e ~30 outras). Uma visita a campo permite prospectar múltiplas plantas no mesmo dia. Custo de venda baixíssimo por conta da concentração geográfica.' },
+  { n:'2', t:'Polo de Criciúma/Cocal do Sul (SC) como segundo movimento.', b:'Portobello, Eliane, Cecrisa/Portinari, Itagres, Ceusa, Cerâmica Carmelo Fior — todas no mesmo polo. Foco em porcelanato premium, onde a dor de variabilidade de tonalidade é maior e o ROI do APC é mais fácil de quantificar.' },
+  { n:'3', t:'Argumento de entrada: gás natural, não APC.', b:'O setor cerâmico não compra "APC" — compra eficiência de gás natural e redução de rejeito. O pitch deve começar com "quanto você gasta de gás por m² produzido?" e mostrar o benchmark setorial. Uma economia de 3–5% em R$ 5 mi/ano de gás já paga o Leaf.' },
+  { n:'4', t:'Corona (Colômbia, nova planta 2024) é a oportunidade internacional imediata.', b:'Planta greenfield de US$ 120 mi em Zipaquirá — processo de comissionamento em andamento. Nenhum APC instalado. Decisor: gerente industrial da nova planta. Argumento: "entrar do jeito certo" desde o início, sem retrofit.' },
+  { n:'5', t:'Grupo Lamosa é o maior prêmio, mas exige paciência.', b:'50 plantas em 9 países. Um piloto bem-sucedido em 1 fábrica no México abre caminho para roll-out LATAM. Ciclo de decisão: 12–18 meses. Abordagem: parceiro tecnológico, não fornecedor de software.' },
+  { n:'6', t:'SACMI Brasil como canal de entrada.', b:'SACMI é o maior fornecedor OEM de equipamentos cerâmicos do Brasil e tem equipe local em SP. Uma parceria ou integração técnica com SACMI posiciona o Leaf como camada de otimização do DCS SACMI — acesso direto à base instalada de clientes SACMI no Brasil.' },
+];
+
+const gl = document.getElementById('gtm-list');
+gtms.forEach(g => {
+  const d = document.createElement('div');
+  d.className = 'gtm-item';
+  d.innerHTML = `<div class="gtm-num">${g.n}</div><div class="gtm-body"><strong>${g.t}</strong> ${g.b}</div>`;
+  gl.appendChild(d);
+});
+
+function show(id) {
+  const ids = ['tam','paises','empresas','processo','gtm'];
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ids[i]===id));
+  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', ids[i]===id));
+}
+</script>
